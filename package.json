@@ -1,0 +1,52 @@
+{
+  "name": "structure-ish",
+  "version": "0.1.0",
+  "description": "Detect data structures which implement the basic Map, Set, or List API",
+  "author": "conrad@burningpotato.com",
+  "license": "MIT",
+  "files": ["dist/**"],
+  "main": "dist/_structure-ish.js",
+  "module": "dist/structure-ish.mjs",
+  "typings": "dist/structure-ish.d.ts",
+  "scripts": {
+    "build": "broccoli build dist --overwrite",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@types/jest": "^23.3.10",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "broccoli": "^2.0.0-beta.4",
+    "broccoli-babel-transpiler": "^7.0.0",
+    "broccoli-cli": "^1.0.0",
+    "broccoli-merge-trees": "^3.0.1",
+    "immutable": "^4.0.0-rc.10",
+    "jest": "^23.6.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.15.3",
+    "run-sequence": "2.2.1",
+    "typescript": "3.0.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0",
+    "invariant": "^2.2.4"
+  },
+  "resolutions": {
+    "babel-core": "7.0.0-bridge.0"
+  },
+  "jest": {
+    "moduleFileExtensions": ["js"]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conartist6/structure-ish.git"
+  },
+  "keywords": ["mutable", "immutable", "map", "set", "list", "sequence", "seq", "es6", "es2015"],
+  "bugs": {
+    "url": "https://github.com/conartist6/structure-ish/issues"
+  },
+  "homepage": "https://github.com/conartist6/structure-ish#readme"
+}
