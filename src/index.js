@@ -43,48 +43,53 @@ export const EntryIterable = Symbol.for('structure-ish.protocol.entry-iterable')
 function validateIsStructure(shape) {
   if (shape) {
     if (typeof shape[Symbol.iterator] !== 'function') {
-      throw new Error("Object with [Structure] property must have [Symbol.iterator]() method");
+      throw new Error('Object with [Structure] property must have [Symbol.iterator]() method');
     }
     if (typeof shape.keys !== 'function') {
-      throw new Error("Object with [Structure] property must have keys() method");
+      throw new Error('Object with [Structure] property must have keys() method');
     }
     if (typeof shape.values !== 'function') {
-      throw new Error("Object with [Structure] property must have values() method");
+      throw new Error('Object with [Structure] property must have values() method');
     }
     if (typeof shape.entries !== 'function') {
-      throw new Error("Object with [Structure] property must have entries() method");
+      throw new Error('Object with [Structure] property must have entries() method');
     }
   }
   return true;
 }
 
 export function isStructure(shape) {
-  return !!(
-    shape &&
-    (shape instanceof Map ||
-      shape instanceof Set ||
-      Array.isArray(shape) ||
-      (shape[Structure]) ||
-      isImmutableStructure(shape))
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateIsStructure(shape);
+  return (
+    !!(
+      shape &&
+      (shape instanceof Map ||
+        shape instanceof Set ||
+        Array.isArray(shape) ||
+        shape[Structure] ||
+        isImmutableStructure(shape))
+    ) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsStructure(shape)
+  );
 }
 
 export function validateHasKeyedMethods(shape) {
   if (shape) {
     if (typeof shape.get !== 'function') {
-      throw new Error("Object with [KeyedMethods] property must have get() method");
+      throw new Error('Object with [KeyedMethods] property must have get() method');
     }
     if (typeof shape.set !== 'function') {
-      throw new Error("Object with [KeyedMethods] property must have set() method");
+      throw new Error('Object with [KeyedMethods] property must have set() method');
     }
     if (typeof shape.has !== 'function') {
-      throw new Error("Object with [KeyedMethods] property must have has() method");
+      throw new Error('Object with [KeyedMethods] property must have has() method');
     }
     if (typeof shape.delete !== 'function') {
-      throw new Error("Object with [KeyedMethods] property must have delete() method");
+      throw new Error('Object with [KeyedMethods] property must have delete() method');
     }
     if (typeof shape.size !== 'number') {
-      throw new Error("Object with [KeyedMethods] property must have a numeric size property");
+      throw new Error('Object with [KeyedMethods] property must have a numeric size property');
     }
   }
   return true;
@@ -92,53 +97,63 @@ export function validateHasKeyedMethods(shape) {
 
 export function hasKeyedMethods(shape) {
   debugger;
-  return !!(
-    shape && (
-      shape[KeyedMethods] || shape instanceof Map || isImmutableMap(shape) || isImmutableList(shape)
-    )
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateHasKeyedMethods(shape);
+  return (
+    !!(
+      shape &&
+      (shape[KeyedMethods] ||
+        shape instanceof Map ||
+        isImmutableMap(shape) ||
+        isImmutableList(shape))
+    ) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateHasKeyedMethods(shape)
+  );
 }
 
 export function validateHasSetMethods(shape) {
   if (shape) {
     if (typeof shape.add !== 'function') {
-      throw new Error("Object with [SetMethods] property must have add() method");
+      throw new Error('Object with [SetMethods] property must have add() method');
     }
     if (typeof shape.has !== 'function') {
-      throw new Error("Object with [SetMethods] property must have has() method");
+      throw new Error('Object with [SetMethods] property must have has() method');
     }
     if (typeof shape.delete !== 'function') {
-      throw new Error("Object with [SetMethods] property must have delete() method");
+      throw new Error('Object with [SetMethods] property must have delete() method');
     }
     if (typeof shape.size !== 'number') {
-      throw new Error("Object with [SetMethods] property must have a numeric size property");
+      throw new Error('Object with [SetMethods] property must have a numeric size property');
     }
   }
   return true;
 }
 
 export function hasSetMethods(shape) {
-  return !!(
-    shape && (shape[SetMethods] || shape instanceof Set || isImmutableSet(shape))
-    ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateHasSetMethods(shape);
+  return (
+    !!(shape && (shape[SetMethods] || shape instanceof Set || isImmutableSet(shape))) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateHasSetMethods(shape)
+  );
 }
 
 function validateIsEntryIterable(shape) {
   if (shape) {
     if (typeof shape[Symbol.iterator] !== 'function') {
-      throw new Error("Object with [EntryIterable] property must have [Symbol.iterator]() method");
+      throw new Error('Object with [EntryIterable] property must have [Symbol.iterator]() method');
     }
   }
-  return true; 
+  return true;
 }
 
 export function isEntryIterable(shape) {
-  return !!(
-    shape &&
-    (shape[EntryIterable] ||
-      shape instanceof Map ||
-      isImmutableKeyed(shape))
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateIsEntryIterable(shape);
+  return (
+    !!(shape && (shape[EntryIterable] || shape instanceof Map || isImmutableKeyed(shape))) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsEntryIterable(shape)
+  );
 }
 
 function validateIsMapish(shape) {
@@ -149,12 +164,17 @@ function validateIsMapish(shape) {
 }
 
 export function isMapish(shape) {
-  return !!(
-    shape &&
-    ((shape[KeyedMethods] && shape[EntryIterable] && shape[Structure]) ||
-      shape instanceof Map ||
-      isImmutableMap(shape))
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateIsMapish(shape);
+  return (
+    !!(
+      shape &&
+      ((shape[KeyedMethods] && shape[EntryIterable] && shape[Structure]) ||
+        shape instanceof Map ||
+        isImmutableMap(shape))
+    ) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsMapish(shape)
+  );
 }
 
 function validateIsSetish(shape) {
@@ -164,12 +184,15 @@ function validateIsSetish(shape) {
 }
 
 export function isSetish(shape) {
-  return !!(
-    shape &&
-    ((shape[SetMethods] && shape[Structure]) ||
-      shape instanceof Set ||
-      isImmutableSet(shape))
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateIsSetish(shape);
+  return (
+    !!(
+      shape &&
+      ((shape[SetMethods] && shape[Structure]) || shape instanceof Set || isImmutableSet(shape))
+    ) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsSetish(shape)
+  );
 }
 
 function validateIsListish(shape) {
@@ -179,9 +202,13 @@ function validateIsListish(shape) {
 }
 
 export function isListish(shape) {
-  return !!(
-    shape &&
-    ((shape[KeyedMethods] && !shape[EntryIterable] && shape[Structure]) ||
-      isImmutableList(shape))
-  ) && typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' && validateIsListish(shape);
+  return (
+    !!(
+      shape &&
+      ((shape[KeyedMethods] && !shape[EntryIterable] && shape[Structure]) || isImmutableList(shape))
+    ) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsListish(shape)
+  );
 }
