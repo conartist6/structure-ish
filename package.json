@@ -1,6 +1,6 @@
 {
   "name": "structure-ish",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Detect data structures which implement the basic Map, Set, or List API",
   "author": "conrad@burningpotato.com",
   "license": "MIT",
