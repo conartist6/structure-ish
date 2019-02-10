@@ -9,9 +9,14 @@
   ],
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "mkdirp dist && babel src/index.js -o dist/index.js",
-    "test": "jest"
+    "build": "mkdirp dist && babel src/index.js -o dist/index.js && cp src/*.d.ts dist",
+    "build:type-tests": "cd src/__test__ && cp index.test.js index.test.ts",
+    "test": "run-s test:*",
+    "test:js": "jest",
+    "test:types": "run-s build:type-tests test:types:__i",
+    "test:types:__i": "tsc"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -26,19 +31,12 @@
     "immutable": "^4.0.0-rc.12",
     "jest": "^23.6.0",
     "mkdirp": "^0.5.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.15.3",
     "typescript": "3.0.3"
   },
-  "dependencies": {
-    "invariant": "^2.2.4"
-  },
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js"
-    ]
   },
   "repository": {
     "type": "git",

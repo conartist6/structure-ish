@@ -18,7 +18,7 @@ import {
   KeyedMethods,
   EntryIterable,
   SetMethods,
-} from '..';
+} from '../index';
 
 const TestRecord = ImmRecordFactory({ foo: null });
 
@@ -35,7 +35,9 @@ class TestKeyedStore {
   set() {}
   has() {}
   delete() {}
-  get size() { return 0 }
+  get size() {
+    return 0;
+  }
   [KeyedMethods]() {}
 }
 
@@ -43,7 +45,9 @@ class TestSetStore {
   add() {}
   has() {}
   delete() {}
-  get size() { return 0 }
+  get size() {
+    return 0;
+  }
   [SetMethods]() {}
 }
 
@@ -55,7 +59,9 @@ class TestMap {
   keys() {}
   values() {}
   entries() {}
-  get size() { return 0 }
+  get size() {
+    return 0;
+  }
   [Symbol.iterator]() {}
   [Structure]() {}
   [KeyedMethods]() {}
@@ -69,7 +75,9 @@ class TestSet {
   keys() {}
   values() {}
   entries() {}
-  get size() { return 0 }
+  get size() {
+    return 0;
+  }
   [Symbol.iterator]() {}
   [Structure]() {}
   [SetMethods]() {}
@@ -83,7 +91,9 @@ class TestList {
   keys() {}
   values() {}
   entries() {}
-  get size() { return 0 }
+  get size() {
+    return 0;
+  }
   [Symbol.iterator]() {}
   [Structure]() {}
   [KeyedMethods]() {}
@@ -95,7 +105,7 @@ class TestEntryIterable {
     return true;
   }
 }
-
+``;
 describe('isStructure', () => {
   it('returns false for undefined input', () => {
     expect(() => isStructure()).not.toThrow();
