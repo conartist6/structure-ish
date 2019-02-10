@@ -30,11 +30,6 @@ If you're already familiar with es6, you'll notice that I've basically just desc
 
 ** NOTE ** Typed Arrays, e.g. `UInt8Array` fit the definition of structures, but are not considered so for the purposes of this library.
 
-## Additional Terminology
-
-- A _Sequence_ is a structure which is not concrete (and not an Array).
-- A _List_ stores indexed data and exposes it through the concrete structure API. There is no native List implementation.
-
 ## The Structure-ish API
 
 The most important caveat is that the structurish API is not duck typed. It requires structures to be positively identified.
