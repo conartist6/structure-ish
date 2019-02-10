@@ -8,23 +8,37 @@ import {
 
 import {
   isStructure,
-  isKeyedStructure,
-  isConcreteStructure,
   isMapish,
   isSetish,
   isListish,
+  hasKeyedMethods,
+  hasSetMethods,
   isEntryIterable,
   Structure,
   KeyedMethods,
   EntryIterable,
-  ConcreteStructure,
   SetMethods,
 } from '..';
 
 const TestRecord = ImmRecordFactory({ foo: null });
 
 class TestStructure {
+  [Symbol.iterator]() {
+    return {next: _ => ({done: true})};
+  }
   [Structure]() {
+    return true;
+  }
+}
+
+class TestKeyedStore {
+  [KeyedMethods]() {
+    return true;
+  }
+}
+
+class TestSetStore {
+  [SetMethods]() {
     return true;
   }
 }
@@ -41,20 +55,11 @@ class TestKeyedStructure {
   }
 }
 
-class TestConcreteStructure {
-  [Structure]() {
-    return true;
-  }
-  [ConcreteStructure]() {
-    return true;
-  }
-}
-
 class TestMap {
-  [Structure]() {
-    return true;
+  [Symbol.iterator]() {
+    return {next: _ => ({done: true})};
   }
-  [ConcreteStructure]() {
+  [Structure]() {
     return true;
   }
   [KeyedMethods]() {
@@ -66,10 +71,10 @@ class TestMap {
 }
 
 class TestSet {
-  [Structure]() {
-    return true;
+  [Symbol.iterator]() {
+    return {next: _ => ({done: true})};
   }
-  [ConcreteStructure]() {
+  [Structure]() {
     return true;
   }
   [SetMethods]() {
@@ -78,10 +83,10 @@ class TestSet {
 }
 
 class TestList {
-  [Structure]() {
-    return true;
+  [Symbol.iterator]() {
+    return {next: _ => ({done: true})};
   }
-  [ConcreteStructure]() {
+  [Structure]() {
     return true;
   }
   [KeyedMethods]() {
@@ -90,6 +95,9 @@ class TestList {
 }
 
 class TestEntryIterable {
+  [Symbol.iterator]() {
+    return {next: _ => ({done: true})};
+  }
   [EntryIterable]() {
     return true;
   }
@@ -144,84 +152,65 @@ describe('isStructure', () => {
   });
 });
 
-describe('isKeyedStructure', () => {
+describe('hasKeyedMethods', () => {
   it('returns false for undefined input', () => {
-    expect(() => isKeyedStructure()).not.toThrow();
-    expect(isKeyedStructure()).toBe(false);
+    expect(() => hasKeyedMethods()).not.toThrow();
+    expect(hasKeyedMethods()).toBe(false);
   });
 
   it('returns true for immutable Keyed collections', () => {
-    expect(isKeyedStructure(ImmMap())).toBe(true);
-    expect(isKeyedStructure(ImmSeq.Keyed())).toBe(true);
+    expect(hasKeyedMethods(ImmMap())).toBe(true);
+    expect(hasKeyedMethods(ImmSeq.Keyed())).toBe(true);
+    expect(hasKeyedMethods(ImmList())).toBe(true);
+    expect(hasKeyedMethods(ImmSeq.Indexed())).toBe(true);
   });
 
   it('returns true for Maps', () => {
-    expect(isKeyedStructure(new Map())).toBe(true);
+    expect(hasKeyedMethods(new Map())).toBe(true);
   });
 
   it('returns true for classes with the proper symbols defined', () => {
-    expect(isKeyedStructure(new TestKeyedStructure())).toBe(true);
-    expect(isKeyedStructure(new TestMap())).toBe(true);
+    expect(hasKeyedMethods(new TestKeyedStore())).toBe(true);
+    expect(hasKeyedMethods(new TestList())).toBe(true);
   });
 
   it('returns false for non-keyed-structure inputs', () => {
-    expect(isKeyedStructure(TestRecord())).toBe(false);
-    expect(isKeyedStructure(Array)).toBe(false);
-    expect(isKeyedStructure({})).toBe(false);
-    expect(isKeyedStructure(new Set())).toBe(false);
-    expect(isKeyedStructure(new TestList())).toBe(false);
-    expect(isKeyedStructure(new TestSet())).toBe(false);
+    expect(hasKeyedMethods(TestRecord())).toBe(false);
+    expect(hasKeyedMethods(Array)).toBe(false);
+    expect(hasKeyedMethods({})).toBe(false);
+    expect(hasSetMethods([])).toBe(false);
+    expect(hasKeyedMethods(new Set())).toBe(false);
+    expect(hasKeyedMethods(new TestSet())).toBe(false);
   });
 });
 
-describe('isConcreteStructure', () => {
+describe('hasSetMethods', () => {
   it('returns false for undefined input', () => {
-    expect(() => isConcreteStructure()).not.toThrow();
-    expect(isConcreteStructure()).toBe(false);
+    expect(() => hasSetMethods()).not.toThrow();
+    expect(hasSetMethods()).toBe(false);
   });
 
-  it('returns true for immutable concrete collections', () => {
-    expect(isConcreteStructure(ImmMap())).toBe(true);
-    expect(isConcreteStructure(ImmList())).toBe(true);
-    expect(isConcreteStructure(ImmSet())).toBe(true);
+  it('returns true for immutable Set collections', () => {
+    expect(hasSetMethods(ImmSet())).toBe(true);
+    expect(hasSetMethods(ImmSeq.Set())).toBe(true);
   });
 
-  it('returns false for immutable sequences', () => {
-    expect(isConcreteStructure(ImmSeq.Keyed())).toBe(false);
-    expect(isConcreteStructure(ImmSeq.Indexed())).toBe(false);
-    expect(isConcreteStructure(ImmSeq.Set())).toBe(false);
-  });
-
-  it('returns true for built in types', () => {
-    expect(isConcreteStructure(new Map())).toBe(true);
-    expect(isConcreteStructure(new Set())).toBe(true);
-  });
-
-  it('returns false for Arrays', () => {
-    expect(isConcreteStructure([])).toBe(false);
+  it('returns true for Sets', () => {
+    expect(hasSetMethods(new Set())).toBe(true);
   });
 
   it('returns true for classes with the proper symbols defined', () => {
-    expect(isConcreteStructure(new TestConcreteStructure())).toBe(true);
-    expect(isConcreteStructure(new TestMap())).toBe(true);
-    expect(isConcreteStructure(new TestSet())).toBe(true);
-    expect(isConcreteStructure(new TestList())).toBe(true);
+    expect(hasSetMethods(new TestSetStore())).toBe(true);
   });
 
-  it('returns false for classes without the Concrete symbol defind', () => {
-    expect(isConcreteStructure(new TestStructure())).toBe(false);
-  });
-
-  it('returns false for non-structure inputs', () => {
-    expect(isStructure(ImmMap)).toBe(false);
-    expect(isStructure(ImmList)).toBe(false);
-    expect(isStructure(ImmSet)).toBe(false);
-    expect(isStructure(ImmSeq.Keyed)).toBe(false);
-    expect(isStructure(ImmSeq.Indexed)).toBe(false);
-    expect(isStructure(ImmSeq.Set)).toBe(false);
-    expect(isStructure(TestRecord())).toBe(false);
-    expect(isStructure(Array)).toBe(false);
-    expect(isStructure({})).toBe(false);
+  it('returns false for non-keyed-structure inputs', () => {
+    expect(hasSetMethods(TestRecord())).toBe(false);
+    expect(hasSetMethods(Array)).toBe(false);
+    expect(hasSetMethods({})).toBe(false);
+    expect(hasSetMethods([])).toBe(false);
+    expect(hasSetMethods(new Map())).toBe(false);
+    expect(hasSetMethods(new TestList())).toBe(false);
+    expect(hasSetMethods(new TestMap())).toBe(false);
   });
 });
 

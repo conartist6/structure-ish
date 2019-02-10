@@ -61,25 +61,21 @@ treated as a structure by structure-ish.
 
 The following symbols are exported:
 
-- `Structure`: When defined causes `isStructureish` to return true
-- `ConcreteStructure`: When defined along with the `Structure` symbol, causes `isConcreteStructure`
-  to return true
-- `Keyed`: When defined along with the `Structure` Symbol, denotes that the default iterator will
-  return `[key, value]` pairs and returns true for `isKeyedStructure`. `isMapish` will return true
-  also if the structure is concrete.
-- `Setish`: When defined along with the `ConcreteStructure` and `Structure` Symbols, denotes that
-  `add` and `has` should be used in place of `get` and `set`.
+- `Structure`: When defined, denotes that the object or instance is iterable, and additionally has `keys`, `values`, and `entries` iterators and a `forEach(value, key)` method.
+- `KeyedMethods`: Denotes that the `get`, `set`, `has`, `remove`, methods are available, as well as the `size` property.
+- `SetMethods`: Denotes that `add`, `has`, and `remove` methods are available, as well as the `size` property.
+- `EntryIterable`: Denotes that the default iterator for this object can be expected to yield `[key, value]` pairs. If `Structure` is also defined, the `entries` iterator should yield the same items as the default iterator, and the `keys` and `values` iterators should yield the equivalent of `Array.from(obj).map(([key,]) => key)` and `Array.from(obj).map(([, value]) => value)` respectively.
 
 Here's an example in which the correct symbols are applied to create a custom Map class:
 
 ```js
 import {
   Structure,
-  Keyed,
-  ConcreteStructure,
+  KeyedMethods,
+  EntryIterable,
   isStructure,
-  isConcreteStructure,
   isMapish,
+  isEntryIterable,
 } from 'structure-ish';
 
 class MyMap {
@@ -92,17 +88,17 @@ class MyMap {
   [Structure]() {
     return true;
   }
-  [ConcreteStructure]() {
+  [EntryIterable]() {
     return true;
   }
-  [Keyed]() {
+  [KeyedMethods]() {
     return true;
   }
 }
 
 isStructure(new MyMap()); // true
-isConcreteStructure(new MyMap()); // true
 isMapish(new MyMap()); // true
+isEntryIterable(new MyMap()); // true
 ```
 
 This is a fair bit of boilerplate, but fortunately it should be reasonable to encapsulate the
