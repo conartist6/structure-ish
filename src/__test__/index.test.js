@@ -23,81 +23,74 @@ import {
 const TestRecord = ImmRecordFactory({ foo: null });
 
 class TestStructure {
-  [Symbol.iterator]() {
-    return {next: _ => ({done: true})};
-  }
-  [Structure]() {
-    return true;
-  }
+  keys() {}
+  values() {}
+  entries() {}
+  [Symbol.iterator]() {}
+  [Structure]() {}
 }
 
 class TestKeyedStore {
-  [KeyedMethods]() {
-    return true;
-  }
+  get() {}
+  set() {}
+  has() {}
+  delete() {}
+  get size() { return 0 }
+  [KeyedMethods]() {}
 }
 
 class TestSetStore {
-  [SetMethods]() {
-    return true;
-  }
-}
-
-class TestKeyedStructure {
-  [Structure]() {
-    return true;
-  }
-  [KeyedMethods]() {
-    return true;
-  }
-  [EntryIterable]() {
-    return true;
-  }
+  add() {}
+  has() {}
+  delete() {}
+  get size() { return 0 }
+  [SetMethods]() {}
 }
 
 class TestMap {
-  [Symbol.iterator]() {
-    return {next: _ => ({done: true})};
-  }
-  [Structure]() {
-    return true;
-  }
-  [KeyedMethods]() {
-    return true;
-  }
-  [EntryIterable]() {
-    return true;
-  }
+  get() {}
+  set() {}
+  has() {}
+  delete() {}
+  keys() {}
+  values() {}
+  entries() {}
+  get size() { return 0 }
+  [Symbol.iterator]() {}
+  [Structure]() {}
+  [KeyedMethods]() {}
+  [EntryIterable]() {}
 }
 
 class TestSet {
-  [Symbol.iterator]() {
-    return {next: _ => ({done: true})};
-  }
-  [Structure]() {
-    return true;
-  }
-  [SetMethods]() {
-    return true;
-  }
+  add() {}
+  has() {}
+  delete() {}
+  keys() {}
+  values() {}
+  entries() {}
+  get size() { return 0 }
+  [Symbol.iterator]() {}
+  [Structure]() {}
+  [SetMethods]() {}
 }
 
 class TestList {
-  [Symbol.iterator]() {
-    return {next: _ => ({done: true})};
-  }
-  [Structure]() {
-    return true;
-  }
-  [KeyedMethods]() {
-    return true;
-  }
+  get() {}
+  set() {}
+  has() {}
+  delete() {}
+  keys() {}
+  values() {}
+  entries() {}
+  get size() { return 0 }
+  [Symbol.iterator]() {}
+  [Structure]() {}
+  [KeyedMethods]() {}
 }
 
 class TestEntryIterable {
-  [Symbol.iterator]() {
-    return {next: _ => ({done: true})};
-  }
+  [Symbol.iterator]() {}
   [EntryIterable]() {
     return true;
   }
@@ -158,11 +151,9 @@ describe('hasKeyedMethods', () => {
     expect(hasKeyedMethods()).toBe(false);
   });
 
-  it('returns true for immutable Keyed collections', () => {
+  it('returns true for immutable Maps and Lists', () => {
     expect(hasKeyedMethods(ImmMap())).toBe(true);
-    expect(hasKeyedMethods(ImmSeq.Keyed())).toBe(true);
     expect(hasKeyedMethods(ImmList())).toBe(true);
-    expect(hasKeyedMethods(ImmSeq.Indexed())).toBe(true);
   });
 
   it('returns true for Maps', () => {
@@ -181,6 +172,8 @@ describe('hasKeyedMethods', () => {
     expect(hasSetMethods([])).toBe(false);
     expect(hasKeyedMethods(new Set())).toBe(false);
     expect(hasKeyedMethods(new TestSet())).toBe(false);
+    expect(hasKeyedMethods(ImmSeq.Keyed())).toBe(false);
+    expect(hasKeyedMethods(ImmSeq.Indexed())).toBe(false);
   });
 });
 
@@ -190,9 +183,8 @@ describe('hasSetMethods', () => {
     expect(hasSetMethods()).toBe(false);
   });
 
-  it('returns true for immutable Set collections', () => {
+  it('returns true for immutable Sets', () => {
     expect(hasSetMethods(ImmSet())).toBe(true);
-    expect(hasSetMethods(ImmSeq.Set())).toBe(true);
   });
 
   it('returns true for Sets', () => {
@@ -211,6 +203,7 @@ describe('hasSetMethods', () => {
     expect(hasSetMethods(new Map())).toBe(false);
     expect(hasSetMethods(new TestList())).toBe(false);
     expect(hasSetMethods(new TestMap())).toBe(false);
+    expect(hasSetMethods(ImmSeq.Set())).toBe(false);
   });
 });
 

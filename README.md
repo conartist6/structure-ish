@@ -32,8 +32,8 @@ If you're already familiar with es6, you'll notice that I've basically just desc
 The most important caveat is that the structurish API is not duck typed. It requires structures to be positively identified.
 
 - `isStructure` Returns true if the object or instance is iterable, and additionally has `keys`, `values`, and `entries` iterators and a `forEach(value, key)` method.
-- `hasKeyedMethods` Returns true if it is safe to use the `get`, `set`, `has`, and `remove`, methods, as well as the `size` property.
-- `hasSetMethods` Returns true if it is safe to use the `add`, `has`, and `remove`, methods, as well as the `size` property.
+- `hasKeyedMethods` Returns true if it is safe to use the `get`, `set`, `has`, and `delete`, methods, as well as the `size` property.
+- `hasSetMethods` Returns true if it is safe to use the `add`, `has`, and `delete`, methods, as well as the `size` property.
 - `isEntryIterable` Denotes that the default iterator for this object can be expected to yield `[key, value]` pairs. If `Structure` is also defined, the `entries` iterator should yield the same items as the default iterator, and the `keys` and `values` iterators should yield the equivalent of `Array.from(obj).map(([key,]) => key)` and `Array.from(obj).map(([, value]) => value)` respectively.
 - `isMapish` Returns true if its argument implements the es6 `Map` API by being a structure, an entry iterable, and having keyed methods.
 - `isSetish` Returns true if its argument implements the es6 `Set` API by being a structure with set methods.
@@ -91,3 +91,8 @@ isEntryIterable(new MyMap()); // true
 
 This is a fair bit of boilerplate, but fortunately it should be reasonable to encapsulate the
 boilerplate in a base class and reuse it.
+
+## FAQs
+
+**Question**: I assumed that `hasKeyedMethods(Immutable.Seq.Keyed())`, (or similar) would be true, why isn't it?
+Because the `get` and `set` methods probably won't have the performance characteristics you would expect, and the `size` property might not exist at all.
