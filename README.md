@@ -4,6 +4,14 @@ Structure-ish exists in order to help es6 code authors reflectively identify and
 
 The goal of structurish is to capture the muliple ways this critical reflective data is currently exposed, to facilitate multiple data structures libraries playing nicely with each other (and with native types), and to promote a long term extensible solution (protocol Symbols) which if broadly adopted would eventually make it unnecessary.
 
+## Usage
+
+To use structure-ish, you must have a working implementation of es6 symbols. If you need to support browsers such as IE11 which do not support symbols, it is your responsibiltiy to set up the relevant parts of corejs, including the Symbol constructor and the well-known-symbol `Symbol.iterator`.
+
+Install with `npm install structure-ish` or `yarn add structure-ish`.
+
+Also note that structure-ish expects to be minified. When `NODE_ENV === 'production'`, static analysis should remove the consistency checks implemented to help eliminate bugs and inconsistencies during dev and test.
+
 ## The Structure API
 
 All structures are required to provide the following basic API:
