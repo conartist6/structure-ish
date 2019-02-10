@@ -1,8 +1,8 @@
 # Structure-ish
 
-Structure-ish exists in order to help es6 code authors reflectively identify and distinguish data structures. A structure is considered to be any object which provides transparent access to a single collection of arbitrary stored data.
+Structure-ish provides core protocols for es6 data storage objects. By using structurish you can declare, for example, that your object (`obj`) implements the `KeyedMethods` protocol. This means that doing `obj.set(key, value)` followed by `obj.get(key)` will result in `value`. Without this library you may be able to check that methods exist with the names `get` and `set`, but the presence of a protocol symbol gives additional information about the behavior you can expect.
 
-The goal of structurish is to capture the muliple ways this critical reflective data is currently exposed, to facilitate multiple data structures libraries playing nicely with each other (and with native types), and to promote a long term extensible solution (protocol Symbols) which if broadly adopted would eventually make it unnecessary.
+Protocol declaration and detection is critical to facilitate multiple data structure implementations playing nicely with each other (and playing nicely with native types), and to promote a long term extensible solution (protocol Symbols) which if broadly adopted would eventually make it unnecessary.
 
 ## Usage
 
@@ -11,24 +11,6 @@ To use structure-ish, you must have a working implementation of es6 symbols. If 
 Install with `npm install structure-ish` or `yarn add structure-ish`.
 
 Also note that structure-ish expects to be minified. When `NODE_ENV === 'production'`, static analysis should remove the consistency checks implemented to help eliminate bugs and inconsistencies during dev and test.
-
-## The Structure API
-
-All structures are required to provide the following basic API:
-
-- Four methods which return iterators: `[Symbol.iterator]()`, `keys()`, `values()`, and `entries()`
-- A `forEach` method of the signature `forEach(value, key)` (and potentially a third argument, the
-  structure)
-
-Additionally structures which are concrete provide random access/update to values via the following API:
-
-- A `has(key)` method
-- Either `get(key)` and `set(key, value)`, or `has(key)` and `add(key)`
-- A `size` property returning the number of entries stored
-
-If you're already familiar with es6, you'll notice that I've basically just described the APIs provided by the `Map` and `Set` builtin classes. Also this definition means that Array is a structure, but **not** technically a concrete structure.
-
-** NOTE ** Typed Arrays, e.g. `UInt8Array` fit the definition of structures, but are not considered so for the purposes of this library.
 
 ## The Structure-ish API
 
@@ -98,4 +80,9 @@ boilerplate in a base class and reuse it.
 ## FAQs
 
 **Question**: I assumed that `hasKeyedMethods(Immutable.Seq.Keyed())`, (or similar) would be true, why isn't it?
+
 Because the `get` and `set` methods probably won't have the performance characteristics you would expect, and the `size` property might not exist at all.
+
+**Question**: Are typed arrays structures? Uint8Array, for example.
+
+They could be considered structures but for reasons of performance they are not.
