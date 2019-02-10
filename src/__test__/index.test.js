@@ -5,6 +5,7 @@ import {
   Seq as ImmSeq,
   Record as ImmRecordFactory,
 } from 'immutable';
+
 import {
   isStructure,
   isKeyedStructure,
@@ -12,11 +13,12 @@ import {
   isMapish,
   isSetish,
   isListish,
-  Keyed,
-  ConcreteStructure,
+  isEntryIterable,
   Structure,
-  Keyed,
-  Setish,
+  KeyedMethods,
+  EntryIterable,
+  ConcreteStructure,
+  SetMethods,
 } from '..';
 
 const TestRecord = ImmRecordFactory({ foo: null });
@@ -31,7 +33,10 @@ class TestKeyedStructure {
   [Structure]() {
     return true;
   }
-  [Keyed]() {
+  [KeyedMethods]() {
+    return true;
+  }
+  [EntryIterable]() {
     return true;
   }
 }
@@ -52,7 +57,10 @@ class TestMap {
   [ConcreteStructure]() {
     return true;
   }
-  [Keyed]() {
+  [KeyedMethods]() {
+    return true;
+  }
+  [EntryIterable]() {
     return true;
   }
 }
@@ -64,7 +72,7 @@ class TestSet {
   [ConcreteStructure]() {
     return true;
   }
-  [Setish]() {
+  [SetMethods]() {
     return true;
   }
 }
@@ -74,6 +82,15 @@ class TestList {
     return true;
   }
   [ConcreteStructure]() {
+    return true;
+  }
+  [KeyedMethods]() {
+    return true;
+  }
+}
+
+class TestEntryIterable {
+  [EntryIterable]() {
     return true;
   }
 }
@@ -192,7 +209,7 @@ describe('isConcreteStructure', () => {
   });
 
   it('returns false for classes without the Concrete symbol defind', () => {
-    expect(isConcreteStructure(new TestStructure())).toBe(true);
+    expect(isConcreteStructure(new TestStructure())).toBe(false);
   });
 
   it('returns false for non-structure inputs', () => {
@@ -281,10 +298,38 @@ describe('isListish', () => {
   });
 
   it('returns false for non-Listish inputs', () => {
-    expect(isListish(ImmList)).toBe(true);
+    expect(isListish(ImmList())).toBe(true);
     expect(isListish(ImmSeq.Indexed())).toBe(false);
     expect(isListish(TestRecord())).toBe(false);
     expect(isListish([])).toBe(false);
     expect(isListish({})).toBe(false);
+  });
+});
+
+describe('isEntryIterable', () => {
+  it('returns false for undefined input', () => {
+    expect(() => isListish()).not.toThrow();
+    expect(isEntryIterable()).toBe(false);
+  });
+
+  it('returns true for Entry Iterables', () => {
+    expect(isEntryIterable(new Map())).toBe(true);
+    expect(isEntryIterable(ImmMap())).toBe(true);
+    expect(isEntryIterable(ImmSeq.Keyed())).toBe(true);
+  });
+
+  it('returns true for classes with the proper symbols defined', () => {
+    expect(isEntryIterable(new TestEntryIterable())).toBe(true);
+  });
+
+  it('returns false for non-entry-iterable inputs', () => {
+    expect(isEntryIterable(new Set())).toBe(false);
+    expect(isEntryIterable(ImmList())).toBe(false);
+    expect(isEntryIterable(ImmSet())).toBe(false);
+    expect(isEntryIterable(ImmSeq.Indexed())).toBe(false);
+    expect(isEntryIterable(ImmSeq.Set())).toBe(false);
+    expect(isEntryIterable(TestRecord())).toBe(false);
+    expect(isEntryIterable([])).toBe(false);
+    expect(isEntryIterable({})).toBe(false);
   });
 });

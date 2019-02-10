@@ -3,34 +3,39 @@ function isImmutableStructurish(shape) {
 }
 
 function isImmutableConcrete(shape) {
-  return shape['@@__IMMUTABLE_ITERABLE__@@'] && !shape['@@__IMMUTABLE_SEQUENCE__@@'];
+  return shape['@@__IMMUTABLE_ITERABLE__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
 }
 
 function isImmutableSequence(shape) {
   return shape['@@__IMMUTABLE_SEQUENCE__@@'];
 }
 
+function isImmutableKeyed(shape) {
+  return shape['@@__IMMUTABLE_KEYED__@@'];
+}
+
 function isImmutableMap(shape) {
-  return shape['@@__IMMUTABLE_KEYED__@@'] && !shape['@@__IMMUTABLE_SEQUENCE__@@'];
+  return shape['@@__IMMUTABLE_KEYED__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
 }
 
 function isImmutableSet(shape) {
   return (
     shape['@@__IMMUTABLE_ITERABLE__@@'] &&
-    !shape['@@__IMMUTABLE_SEQUENCE__@@'] &&
+    !shape['@@__IMMUTABLE_SEQ__@@'] &&
     !shape['@@__IMMUTABLE_KEYED__@@'] &&
     !shape['@@__IMMUTABLE_INDEXED__@@']
   );
 }
 
 function isImmutableList(shape) {
-  return shape['@@__IMMUTABLE_INDEXED__@@'] && !shape['@@__IMMUTABLE_SEQUENCE__@@'];
+  return shape['@@__IMMUTABLE_INDEXED__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
 }
 
-export const ConcreteStructure = Symbol('Concrete Structure');
-export const Structure = Symbol('Structure');
-export const Keyed = Symbol('Keyed');
-export const Setish = Symbol('Set-ish');
+export const ConcreteStructure = Symbol.for('structure-ish.protocol.concrete-structure');
+export const Structure = Symbol.for('structure-ish.protocol.structure');
+export const KeyedMethods = Symbol.for('structure-ish.prototcol.get-set');
+export const SetMethods = Symbol.for('structure-ish.protocol.add');
+export const EntryIterable = Symbol.for('structure-ish.protocol.entry-iterable');
 
 export function isStructure(shape) {
   return !!(
@@ -46,7 +51,7 @@ export function isStructure(shape) {
 export function isKeyedStructure(shape) {
   return !!(
     shape &&
-    ((shape[Keyed] && shape[Structure]) || shape instanceof Map || isImmutableMap(shape))
+    ((shape[EntryIterable] && shape[KeyedMethods] && shape[Structure]) || shape instanceof Map || isImmutableKeyed(shape))
   );
 }
 
@@ -63,7 +68,7 @@ export function isConcreteStructure(shape) {
 export function isMapish(shape) {
   return !!(
     shape &&
-    ((shape[Keyed] && shape[ConcreteStructure] && shape[Structure]) ||
+    ((shape[KeyedMethods] && shape[EntryIterable] && shape[ConcreteStructure] && shape[Structure]) ||
       shape instanceof Map ||
       isImmutableMap(shape))
   );
@@ -72,7 +77,7 @@ export function isMapish(shape) {
 export function isSetish(shape) {
   return !!(
     shape &&
-    ((shape[Setish] && shape[ConcreteStructure] && shape[Structure]) ||
+    ((shape[SetMethods] && shape[ConcreteStructure] && shape[Structure]) ||
       shape instanceof Set ||
       isImmutableSet(shape))
   );
@@ -81,7 +86,16 @@ export function isSetish(shape) {
 export function isListish(shape) {
   return !!(
     shape &&
-    ((shape[ConcreteStructure] && !shape[Setish] && !shape[Keyed] && shape[Structure]) ||
+    ((shape[KeyedMethods] && !shape[EntryIterable] && shape[ConcreteStructure] && shape[Structure]) ||
       isImmutableList(shape))
+  );
+}
+
+export function isEntryIterable(shape) {
+  return !!(
+    shape &&
+    (shape[EntryIterable] ||
+      shape instanceof Map ||
+      isImmutableKeyed(shape))
   );
 }
