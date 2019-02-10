@@ -4,6 +4,9 @@ Structure-ish provides core protocols for es6 data storage objects. By using str
 
 Protocol declaration and detection is critical to facilitate multiple data structure implementations playing nicely with each other (and playing nicely with native types), and to promote a long term extensible solution (protocol Symbols) which if broadly adopted would eventually make it unnecessary.
 
+[![Build Status](https://travis-ci.org/conartist6/structure-ish.svg?branch=master)](https://travis-ci.org/conartist6/structure-ish)
+[![npm version](https://img.shields.io/npm/v/structure-ish.svg)](https://www.npmjs.com/package/structure-ish)
+
 ## Usage
 
 To use structure-ish, you must have a working implementation of es6 symbols. If you need to support browsers such as IE11 which do not support symbols, it is your responsibiltiy to set up the relevant parts of corejs, including the Symbol constructor and the well-known-symbol `Symbol.iterator`.
