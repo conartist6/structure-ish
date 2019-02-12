@@ -11,12 +11,14 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rimraf dist",
     "build": "mkdirp dist && babel src/index.js -o dist/index.js && cp src/*.d.ts dist",
     "build:type-tests": "cd src/__test__ && cp index.test.js index.test.ts",
     "test": "run-s test:*",
     "test:js": "jest",
     "test:types": "run-s build:type-tests test:types:__i",
-    "test:types:__i": "tsc"
+    "test:types:__i": "tsc",
+    "prepublishOnly": "run-s test clean build"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -33,6 +35,7 @@
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.15.3",
+    "rimraf": "^2.6.3",
     "typescript": "3.0.3"
   },
   "resolutions": {
