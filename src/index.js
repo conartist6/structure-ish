@@ -59,6 +59,9 @@ function validateIsStructure(shape) {
     if (typeof shape.entries !== 'function') {
       throw new Error('Object with [Structure] property must have entries() method');
     }
+    if (typeof shape.forEach !== 'function') {
+      throw new Error('Object with [Structure] property must have forEach() method');
+    }
   }
   return true;
 }

@@ -28,6 +28,7 @@ class TestStructure {
   keys() {}
   values() {}
   entries() {}
+  forEach() {}
   [Symbol.iterator]() {}
   [Structure]() {}
 }
@@ -65,6 +66,7 @@ class TestMap {
   keys() {}
   values() {}
   entries() {}
+  forEach() {}
   get size() {
     return 0;
   }
@@ -81,6 +83,7 @@ class TestSet {
   keys() {}
   values() {}
   entries() {}
+  forEach() {}
   get size() {
     return 0;
   }
@@ -97,6 +100,7 @@ class TestList {
   keys() {}
   values() {}
   entries() {}
+  forEach() {}
   get size() {
     return 0;
   }
