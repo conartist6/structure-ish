@@ -41,6 +41,11 @@
   "resolutions": {
     "babel-core": "7.0.0-bridge.0"
   },
+  "jest": {
+    "moduleFileExtensions": [
+      "js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/conartist6/structure-ish.git"
