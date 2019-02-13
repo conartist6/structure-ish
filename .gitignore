@@ -2,7 +2,6 @@
 node_modules
 
 /dist
-/tmp
 src/__test__/*.ts
 
 *.sublime-workspace

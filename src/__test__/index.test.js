@@ -13,11 +13,13 @@ import {
   isListish,
   hasKeyedMethods,
   hasSetMethods,
+  isImmutable,
   isEntryIterable,
   Structure,
   KeyedMethods,
-  EntryIterable,
   SetMethods,
+  Immutable,
+  EntryIterable,
 } from '../index';
 
 const TestRecord = ImmRecordFactory({ foo: null });
@@ -49,6 +51,10 @@ class TestSetStore {
     return 0;
   }
   [SetMethods]() {}
+}
+
+class TestImmutableSet extends TestSetStore {
+  [Immutable]() {}
 }
 
 class TestMap {
@@ -214,6 +220,36 @@ describe('hasSetMethods', () => {
     expect(hasSetMethods(new TestList())).toBe(false);
     expect(hasSetMethods(new TestMap())).toBe(false);
     expect(hasSetMethods(ImmSeq.Set())).toBe(false);
+  });
+});
+
+describe('isImmutable', () => {
+  it('return false for undefined input', () => {
+    expect(() => isImmutable()).not.toThrow();
+    expect(isImmutable()).toBe(false);
+  });
+
+  it('returns true for Immutable.js concrete types', () => {
+    expect(isImmutable(ImmMap())).toBe(true);
+    expect(isImmutable(ImmSet())).toBe(true);
+    expect(isImmutable(ImmList())).toBe(true);
+  });
+
+  it('returns true for classes with the proper symbols defined', () => {
+    expect(isImmutable(new TestImmutableSet())).toBe(true);
+  });
+
+  it('returs false for non-immutable inputs', () => {
+    expect(isImmutable(Array)).toBe(false);
+    expect(isImmutable({})).toBe(false);
+    expect(isImmutable([])).toBe(false);
+    expect(isImmutable(new Map())).toBe(false);
+    expect(isImmutable(new Set())).toBe(false);
+    expect(isImmutable(ImmSeq.Keyed())).toBe(false);
+    expect(isImmutable(ImmSeq.Indexed())).toBe(false);
+    expect(isImmutable(ImmSeq.Set())).toBe(false);
+    expect(isImmutable(new TestSetStore())).toBe(false);
+    expect(isImmutable(new TestKeyedStore())).toBe(false);
   });
 });
 

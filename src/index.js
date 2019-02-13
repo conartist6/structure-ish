@@ -1,16 +1,20 @@
-function isImmutableStructure(shape) {
+function isImmutableJsStructure(shape) {
   return shape['@@__IMMUTABLE_ITERABLE__@@'];
 }
 
-function isImmutableKeyed(shape) {
+function isImmutableJsConcrete(shape) {
+  return shape['@@__IMMUTABLE_ITERABLE__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
+}
+
+function isImmutableJsKeyed(shape) {
   return shape['@@__IMMUTABLE_KEYED__@@'];
 }
 
-function isImmutableIndexed(shape) {
+function isImmutableJsIndexed(shape) {
   return shape['@@__IMMUTABLE_INDEXED__@@'];
 }
 
-function isImmutableDuplicated(shape) {
+function isImmutableJsDuplicated(shape) {
   return (
     shape['@@__IMMUTABLE_ITERABLE__@@'] &&
     !shape['@@__IMMUTABLE_KEYED__@@'] &&
@@ -18,11 +22,11 @@ function isImmutableDuplicated(shape) {
   );
 }
 
-function isImmutableMap(shape) {
+function isImmutableJsMap(shape) {
   return shape['@@__IMMUTABLE_KEYED__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
 }
 
-function isImmutableSet(shape) {
+function isImmutableJsSet(shape) {
   return (
     shape['@@__IMMUTABLE_ITERABLE__@@'] &&
     !shape['@@__IMMUTABLE_SEQ__@@'] &&
@@ -31,13 +35,14 @@ function isImmutableSet(shape) {
   );
 }
 
-function isImmutableList(shape) {
+function isImmutableJsList(shape) {
   return shape['@@__IMMUTABLE_INDEXED__@@'] && !shape['@@__IMMUTABLE_SEQ__@@'];
 }
 
 export const Structure = Symbol.for('structure-ish.prototcol.structure');
 export const KeyedMethods = Symbol.for('structure-ish.prototcol.get-set');
 export const SetMethods = Symbol.for('structure-ish.protocol.add');
+export const Immutable = Symbol.for('structure-ish.protocol.immutable');
 export const EntryIterable = Symbol.for('structure-ish.protocol.entry-iterable');
 
 function validateIsStructure(shape) {
@@ -66,7 +71,7 @@ export function isStructure(shape) {
         shape instanceof Set ||
         Array.isArray(shape) ||
         shape[Structure] ||
-        isImmutableStructure(shape))
+        isImmutableJsStructure(shape))
     ) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
@@ -102,14 +107,16 @@ export function hasKeyedMethods(shape) {
       shape &&
       (shape[KeyedMethods] ||
         shape instanceof Map ||
-        isImmutableMap(shape) ||
-        isImmutableList(shape))
+        isImmutableJsMap(shape) ||
+        isImmutableJsList(shape))
     ) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
     validateHasKeyedMethods(shape)
   );
 }
+
+function checkHasSetMethods(shape) {}
 
 export function validateHasSetMethods(shape) {
   if (shape) {
@@ -131,10 +138,36 @@ export function validateHasSetMethods(shape) {
 
 export function hasSetMethods(shape) {
   return (
-    !!(shape && (shape[SetMethods] || shape instanceof Set || isImmutableSet(shape))) &&
+    !!(shape && (shape[SetMethods] || shape instanceof Set || isImmutableJsSet(shape))) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
     validateHasSetMethods(shape)
+  );
+}
+
+function validateIsImmutable(shape) {
+  if (shape) {
+    if (!hasSetMethods(shape) && !hasKeyedMethods(shape)) {
+      throw new Error(
+        'Object with [Immutable] property must also have [SetMethods] or [KeyedMethods]',
+      );
+    }
+    if (shape[SetMethods]) {
+      validateHasSetMethods(shape);
+    }
+    if (shape[KeyedMethods]) {
+      validateHasKeyedMethods(shape);
+    }
+  }
+  return true;
+}
+
+export function isImmutable(shape) {
+  return (
+    !!(shape && (shape[Immutable] || isImmutableJsConcrete(shape))) &&
+    typeof process !== 'undefined' &&
+    process.env.NODE_ENV !== 'production' &&
+    validateIsImmutable(shape)
   );
 }
 
@@ -149,7 +182,7 @@ function validateIsEntryIterable(shape) {
 
 export function isEntryIterable(shape) {
   return (
-    !!(shape && (shape[EntryIterable] || shape instanceof Map || isImmutableKeyed(shape))) &&
+    !!(shape && (shape[EntryIterable] || shape instanceof Map || isImmutableJsKeyed(shape))) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
     validateIsEntryIterable(shape)
@@ -169,7 +202,7 @@ export function isMapish(shape) {
       shape &&
       ((shape[KeyedMethods] && shape[EntryIterable] && shape[Structure]) ||
         shape instanceof Map ||
-        isImmutableMap(shape))
+        isImmutableJsMap(shape))
     ) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
@@ -187,7 +220,7 @@ export function isSetish(shape) {
   return (
     !!(
       shape &&
-      ((shape[SetMethods] && shape[Structure]) || shape instanceof Set || isImmutableSet(shape))
+      ((shape[SetMethods] && shape[Structure]) || shape instanceof Set || isImmutableJsSet(shape))
     ) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
@@ -205,7 +238,8 @@ export function isListish(shape) {
   return (
     !!(
       shape &&
-      ((shape[KeyedMethods] && !shape[EntryIterable] && shape[Structure]) || isImmutableList(shape))
+      ((shape[KeyedMethods] && !shape[EntryIterable] && shape[Structure]) ||
+        isImmutableJsList(shape))
     ) &&
     typeof process !== 'undefined' &&
     process.env.NODE_ENV !== 'production' &&
