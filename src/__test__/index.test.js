@@ -7,106 +7,42 @@ import {
 } from 'immutable';
 
 import {
-  isStructure,
-  isMapish,
-  isSetish,
-  isListish,
-  hasKeyedMethods,
-  hasSetMethods,
-  isImmutable,
+  isSequence,
+  hasKeyedAccessors,
+  hasSetAccessors,
   isEntryIterable,
-  Structure,
-  KeyedMethods,
-  SetMethods,
-  Immutable,
+  Sequence,
+  KeyedAccessors,
+  SetAccessors,
   EntryIterable,
 } from '../index';
 
 const TestRecord = ImmRecordFactory({ foo: null });
 
-class TestStructure {
+class TestSequence {
   keys() {}
   values() {}
   entries() {}
   forEach() {}
   [Symbol.iterator]() {}
-  [Structure]() {}
+  [Sequence]() {}
 }
 
 class TestKeyedStore {
   get() {}
-  set() {}
   has() {}
-  delete() {}
   get size() {
     return 0;
   }
-  [KeyedMethods]() {}
+  [KeyedAccessors]() {}
 }
 
 class TestSetStore {
-  add() {}
   has() {}
-  delete() {}
   get size() {
     return 0;
   }
-  [SetMethods]() {}
-}
-
-class TestImmutableSet extends TestSetStore {
-  [Immutable]() {}
-}
-
-class TestMap {
-  get() {}
-  set() {}
-  has() {}
-  delete() {}
-  keys() {}
-  values() {}
-  entries() {}
-  forEach() {}
-  get size() {
-    return 0;
-  }
-  [Symbol.iterator]() {}
-  [Structure]() {}
-  [KeyedMethods]() {}
-  [EntryIterable]() {}
-}
-
-class TestSet {
-  add() {}
-  has() {}
-  delete() {}
-  keys() {}
-  values() {}
-  entries() {}
-  forEach() {}
-  get size() {
-    return 0;
-  }
-  [Symbol.iterator]() {}
-  [Structure]() {}
-  [SetMethods]() {}
-}
-
-class TestList {
-  get() {}
-  set() {}
-  has() {}
-  delete() {}
-  keys() {}
-  values() {}
-  entries() {}
-  forEach() {}
-  get size() {
-    return 0;
-  }
-  [Symbol.iterator]() {}
-  [Structure]() {}
-  [KeyedMethods]() {}
+  [SetAccessors]() {}
 }
 
 class TestEntryIterable {
@@ -116,231 +52,116 @@ class TestEntryIterable {
   }
 }
 ``;
-describe('isStructure', () => {
+describe('isSequence', () => {
   it('returns false for undefined input', () => {
-    expect(() => isStructure()).not.toThrow();
-    expect(isStructure()).toBe(false);
+    expect(() => isSequence()).not.toThrow();
+    expect(isSequence()).toBe(false);
   });
 
   it('returns true for immutable collections', () => {
-    expect(isStructure(ImmMap())).toBe(true);
-    expect(isStructure(ImmList())).toBe(true);
-    expect(isStructure(ImmSet())).toBe(true);
-    expect(isStructure(ImmSeq.Keyed())).toBe(true);
-    expect(isStructure(ImmSeq.Indexed())).toBe(true);
-    expect(isStructure(ImmSeq.Set())).toBe(true);
+    expect(isSequence(ImmMap())).toBe(true);
+    expect(isSequence(ImmList())).toBe(true);
+    expect(isSequence(ImmSet())).toBe(true);
+    expect(isSequence(ImmSeq.Keyed())).toBe(true);
+    expect(isSequence(ImmSeq.Indexed())).toBe(true);
+    expect(isSequence(ImmSeq.Set())).toBe(true);
   });
 
   it('returns true for built in types', () => {
-    expect(isStructure([])).toBe(true);
-    expect(isStructure(new Map())).toBe(true);
-    expect(isStructure(new Set())).toBe(true);
+    expect(isSequence([])).toBe(true);
+    expect(isSequence(new Map())).toBe(true);
+    expect(isSequence(new Set())).toBe(true);
   });
 
   it('returns false for typed arrays', () => {
-    expect(isStructure(new Uint16Array())).toBe(false);
-    expect(isStructure(new Uint16Array())).toBe(false);
-    expect(isStructure(new Uint32Array())).toBe(false);
-    expect(isStructure(new Int16Array())).toBe(false);
-    expect(isStructure(new Int16Array())).toBe(false);
-    expect(isStructure(new Int32Array())).toBe(false);
-    expect(isStructure(new Float32Array())).toBe(false);
-    expect(isStructure(new Float64Array())).toBe(false);
+    expect(isSequence(new Uint16Array())).toBe(false);
+    expect(isSequence(new Uint16Array())).toBe(false);
+    expect(isSequence(new Uint32Array())).toBe(false);
+    expect(isSequence(new Int16Array())).toBe(false);
+    expect(isSequence(new Int16Array())).toBe(false);
+    expect(isSequence(new Int32Array())).toBe(false);
+    expect(isSequence(new Float32Array())).toBe(false);
+    expect(isSequence(new Float64Array())).toBe(false);
   });
 
   it('returns true for classes with the proper symbols defined', () => {
-    expect(isStructure(new TestStructure())).toBe(true);
+    expect(isSequence(new TestSequence())).toBe(true);
   });
 
   it('returns false for non-structure inputs', () => {
-    expect(isStructure(ImmMap)).toBe(false);
-    expect(isStructure(ImmList)).toBe(false);
-    expect(isStructure(ImmSet)).toBe(false);
-    expect(isStructure(ImmSeq.Keyed)).toBe(false);
-    expect(isStructure(ImmSeq.Indexed)).toBe(false);
-    expect(isStructure(ImmSeq.Set)).toBe(false);
-    expect(isStructure(TestRecord())).toBe(false);
-    expect(isStructure(Array)).toBe(false);
-    expect(isStructure({})).toBe(false);
+    expect(isSequence(ImmMap)).toBe(false);
+    expect(isSequence(ImmList)).toBe(false);
+    expect(isSequence(ImmSet)).toBe(false);
+    expect(isSequence(ImmSeq.Keyed)).toBe(false);
+    expect(isSequence(ImmSeq.Indexed)).toBe(false);
+    expect(isSequence(ImmSeq.Set)).toBe(false);
+    expect(isSequence(TestRecord())).toBe(false);
+    expect(isSequence(Array)).toBe(false);
+    expect(isSequence({})).toBe(false);
   });
 });
 
-describe('hasKeyedMethods', () => {
+describe('hasKeyedAccessors', () => {
   it('returns false for undefined input', () => {
-    expect(() => hasKeyedMethods()).not.toThrow();
-    expect(hasKeyedMethods()).toBe(false);
+    expect(() => hasKeyedAccessors()).not.toThrow();
+    expect(hasKeyedAccessors()).toBe(false);
   });
 
   it('returns true for immutable Maps and Lists', () => {
-    expect(hasKeyedMethods(ImmMap())).toBe(true);
-    expect(hasKeyedMethods(ImmList())).toBe(true);
+    expect(hasKeyedAccessors(ImmMap())).toBe(true);
+    expect(hasKeyedAccessors(ImmList())).toBe(true);
   });
 
   it('returns true for Maps', () => {
-    expect(hasKeyedMethods(new Map())).toBe(true);
+    expect(hasKeyedAccessors(new Map())).toBe(true);
   });
 
   it('returns true for classes with the proper symbols defined', () => {
-    expect(hasKeyedMethods(new TestKeyedStore())).toBe(true);
-    expect(hasKeyedMethods(new TestList())).toBe(true);
+    expect(hasKeyedAccessors(new TestKeyedStore())).toBe(true);
   });
 
   it('returns false for non-keyed-structure inputs', () => {
-    expect(hasKeyedMethods(TestRecord())).toBe(false);
-    expect(hasKeyedMethods(Array)).toBe(false);
-    expect(hasKeyedMethods({})).toBe(false);
-    expect(hasSetMethods([])).toBe(false);
-    expect(hasKeyedMethods(new Set())).toBe(false);
-    expect(hasKeyedMethods(new TestSet())).toBe(false);
-    expect(hasKeyedMethods(ImmSeq.Keyed())).toBe(false);
-    expect(hasKeyedMethods(ImmSeq.Indexed())).toBe(false);
+    expect(hasKeyedAccessors(TestRecord())).toBe(false);
+    expect(hasKeyedAccessors(Array)).toBe(false);
+    expect(hasKeyedAccessors({})).toBe(false);
+    expect(hasSetAccessors([])).toBe(false);
+    expect(hasKeyedAccessors(new Set())).toBe(false);
+    expect(hasKeyedAccessors(ImmSeq.Keyed())).toBe(false);
+    expect(hasKeyedAccessors(ImmSeq.Indexed())).toBe(false);
   });
 });
 
-describe('hasSetMethods', () => {
+describe('hasSetAccessors', () => {
   it('returns false for undefined input', () => {
-    expect(() => hasSetMethods()).not.toThrow();
-    expect(hasSetMethods()).toBe(false);
+    expect(() => hasSetAccessors()).not.toThrow();
+    expect(hasSetAccessors()).toBe(false);
   });
 
   it('returns true for immutable Sets', () => {
-    expect(hasSetMethods(ImmSet())).toBe(true);
+    expect(hasSetAccessors(ImmSet())).toBe(true);
   });
 
   it('returns true for Sets', () => {
-    expect(hasSetMethods(new Set())).toBe(true);
+    expect(hasSetAccessors(new Set())).toBe(true);
   });
 
   it('returns true for classes with the proper symbols defined', () => {
-    expect(hasSetMethods(new TestSetStore())).toBe(true);
+    expect(hasSetAccessors(new TestSetStore())).toBe(true);
   });
 
   it('returns false for non-keyed-structure inputs', () => {
-    expect(hasSetMethods(TestRecord())).toBe(false);
-    expect(hasSetMethods(Array)).toBe(false);
-    expect(hasSetMethods({})).toBe(false);
-    expect(hasSetMethods([])).toBe(false);
-    expect(hasSetMethods(new Map())).toBe(false);
-    expect(hasSetMethods(new TestList())).toBe(false);
-    expect(hasSetMethods(new TestMap())).toBe(false);
-    expect(hasSetMethods(ImmSeq.Set())).toBe(false);
-  });
-});
-
-describe('isImmutable', () => {
-  it('return false for undefined input', () => {
-    expect(() => isImmutable()).not.toThrow();
-    expect(isImmutable()).toBe(false);
-  });
-
-  it('returns true for Immutable.js concrete types', () => {
-    expect(isImmutable(ImmMap())).toBe(true);
-    expect(isImmutable(ImmSet())).toBe(true);
-    expect(isImmutable(ImmList())).toBe(true);
-  });
-
-  it('returns true for classes with the proper symbols defined', () => {
-    expect(isImmutable(new TestImmutableSet())).toBe(true);
-  });
-
-  it('returs false for non-immutable inputs', () => {
-    expect(isImmutable(Array)).toBe(false);
-    expect(isImmutable({})).toBe(false);
-    expect(isImmutable([])).toBe(false);
-    expect(isImmutable(new Map())).toBe(false);
-    expect(isImmutable(new Set())).toBe(false);
-    expect(isImmutable(ImmSeq.Keyed())).toBe(false);
-    expect(isImmutable(ImmSeq.Indexed())).toBe(false);
-    expect(isImmutable(ImmSeq.Set())).toBe(false);
-    expect(isImmutable(new TestSetStore())).toBe(false);
-    expect(isImmutable(new TestKeyedStore())).toBe(false);
-  });
-});
-
-describe('isMapish', () => {
-  it('returns false for undefined input', () => {
-    expect(() => isMapish()).not.toThrow();
-    expect(isMapish()).toBe(false);
-  });
-
-  it('returns true for native Maps', () => {
-    expect(isMapish(new Map())).toBe(true);
-  });
-
-  it('returns true for Immutable Maps', () => {
-    expect(isMapish(ImmMap())).toBe(true);
-  });
-
-  it('returns true for classes with the proper symbols defined', () => {
-    expect(isMapish(new TestMap())).toBe(true);
-  });
-
-  it('returns false for non-Mapish inputs', () => {
-    expect(isMapish(Map)).toBe(false);
-    expect(isMapish(ImmMap)).toBe(false);
-    expect(isMapish(ImmSeq.Keyed())).toBe(false);
-    expect(isMapish(TestRecord())).toBe(false);
-    expect(isMapish(new Set())).toBe(false);
-    expect(isMapish([])).toBe(false);
-    expect(isMapish({})).toBe(false);
-  });
-});
-
-describe('isSetish', () => {
-  it('returns false for undefined input', () => {
-    expect(() => isSetish()).not.toThrow();
-    expect(isSetish()).toBe(false);
-  });
-
-  it('returns true for native Sets', () => {
-    expect(isSetish(new Set())).toBe(true);
-  });
-
-  it('returns true for Immutable Sets', () => {
-    expect(isSetish(ImmSet())).toBe(true);
-  });
-
-  it('returns true for classes with the proper symbols defined', () => {
-    expect(isSetish(new TestSet())).toBe(true);
-  });
-
-  it('returns false for non-Setish inputs', () => {
-    expect(isSetish(Set)).toBe(false);
-    expect(isSetish(ImmSet)).toBe(false);
-    expect(isSetish(ImmSeq.Set())).toBe(false);
-    expect(isSetish(TestRecord())).toBe(false);
-    expect(isSetish(new Map())).toBe(false);
-    expect(isSetish([])).toBe(false);
-    expect(isSetish({})).toBe(false);
-  });
-});
-
-describe('isListish', () => {
-  it('returns false for undefined input', () => {
-    expect(() => isListish()).not.toThrow();
-    expect(isListish()).toBe(false);
-  });
-
-  it('returns true for Listish inputs', () => {
-    expect(isListish(ImmList())).toBe(true);
-  });
-
-  it('returns true for classes with the proper symbols defined', () => {
-    expect(isListish(new TestList())).toBe(true);
-  });
-
-  it('returns false for non-Listish inputs', () => {
-    expect(isListish(ImmList())).toBe(true);
-    expect(isListish(ImmSeq.Indexed())).toBe(false);
-    expect(isListish(TestRecord())).toBe(false);
-    expect(isListish([])).toBe(false);
-    expect(isListish({})).toBe(false);
+    expect(hasSetAccessors(TestRecord())).toBe(false);
+    expect(hasSetAccessors(Array)).toBe(false);
+    expect(hasSetAccessors({})).toBe(false);
+    expect(hasSetAccessors([])).toBe(false);
+    expect(hasSetAccessors(new Map())).toBe(false);
+    expect(hasSetAccessors(ImmSeq.Set())).toBe(false);
   });
 });
 
 describe('isEntryIterable', () => {
   it('returns false for undefined input', () => {
-    expect(() => isListish()).not.toThrow();
+    expect(() => isEntryIterable()).not.toThrow();
     expect(isEntryIterable()).toBe(false);
   });
 

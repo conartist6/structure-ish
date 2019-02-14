@@ -20,6 +20,9 @@
     "test:types:__i": "tsc",
     "prepublishOnly": "run-s test clean build"
   },
+  "dependencies": {
+    "expect": "^24.1.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
