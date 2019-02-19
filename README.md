@@ -30,7 +30,7 @@ If you can, the easiest way to create a new type of structure is to subclass `Ma
 
 Therefore this library exports Symbols, which if incorporated into a class will cause it to be treated as a structure by structure-ish.
 
-These symbols imply things about how certain other methods will behave. It is beyond the scope of this README to explain the complete set of expectations that are implied, yet it is extermely important that that set of expectations is formalized, so for this purpose I have created tests. You can find in `src/protocol-tests` directory. They can be used as a reference material or, even better, they can be imported directly into your unit tests and executed against your structure implemenation. I cannot recommend this approach enough, and will be readily available to support any issues you should have integrating structure-ish tests with an existing unit testing setup.
+Just having the correct methods exist is not enough, they must also behave as intended in relation to each other. To codify what these relationships are and help verify that all possible use cases will work, I have create a test suite designed to be run on structures which consume these symbols. For more information on setting it up, look [here](https://github.com/conartist6/structure-ish/tree/master/src/protocol-tests#protocol-tests).
 
 The following symbols are exported:
 
